@@ -5,6 +5,7 @@ import 'package:pokemon_dictionary/pages/pokemon_attributes.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     initialRoute: "/",
     routes: {
       "/" : (context) => Loading() ,
