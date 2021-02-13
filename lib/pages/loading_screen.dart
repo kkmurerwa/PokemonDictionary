@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pokemon_dictionary/services/all_pokemon.dart';
+import 'package:pokemon_dictionary/values/colors/colors.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -38,8 +39,8 @@ class _LoadingState extends State<Loading> {
           padding: const EdgeInsets.only(top: 300.0),
           child: Column(
             children: <Widget> [
-              SpinKitCubeGrid(
-                color: Colors.green[700],
+              SpinKitFadingCircle(
+                color: colorSecondary,
                 size: 80.0,
               ),
               SizedBox(height: 20.0),
@@ -47,7 +48,7 @@ class _LoadingState extends State<Loading> {
                 "Loading pokemon",
                 style: TextStyle(
                   fontSize: 30.0,
-                  color: Colors.green[700],
+                  color: colorSecondary,
                 ),
               )
             ],

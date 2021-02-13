@@ -21,13 +21,12 @@ class _HomeState extends State<Home> {
     // print(data);
 
     // Get color argument from calling activity
-    Color bgColor = Colors.green[900];
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: bgColor,
+        backgroundColor: colorSecondary,
         title: Text(
-            "All Pokemon"
+            "All Pokemon",
         ),
         centerTitle: true,
         elevation: 0,
@@ -96,7 +95,7 @@ class _HomeState extends State<Home> {
                                   return Container(
                                     height: 150,
                                     child: SpinKitFadingCircle(
-                                      color: colorPrimary,
+                                      color: colorSecondary,
                                     ),
                                   );
                                 },
@@ -121,30 +120,6 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-      // body: ListView.builder(
-      //   itemCount: list.length,
-      //   itemBuilder: (context, index) {
-      //     return Padding(
-      //       padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 4.0),
-      //       child: Card(
-      //         child: ListTile(
-      //           onTap: () {
-      //             // String timeURL = locations[index].locationUrl;
-      //             // print(timeURL);
-      //             viewPokemonDetails(list[index]);
-      //           },
-      //           title: Text(
-      //               list[index]["name"].substring(0, 1).toUpperCase() + list[index]["name"].substring(1)
-      //           ),
-      //           // leading: CircleAvatar(
-      //           //   backgroundImage: AssetImage('assets/${[index].flagUrl}'),
-      //           // ),
-      //         ),
-      //       ),
-      //     );
-      //   },
-      // ),
-
     );
   }
 

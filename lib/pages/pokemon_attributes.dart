@@ -135,8 +135,8 @@ class _PokemonAttributesState extends State<PokemonAttributes> {
                             Text(
                               "ABILITIES",
                               style: TextStyle(
-                                fontSize: 22.0,
-                                color: colorPrimary,
+                                fontSize: 25.0,
+                                color: colorSecondary,
                               ),
                             ),
                             Container(
@@ -162,7 +162,10 @@ class _PokemonAttributesState extends State<PokemonAttributes> {
               );
             } else {
               return Center(
-                child: CircularProgressIndicator(),
+                child: SpinKitFadingCircle(
+                  color: colorSecondary,
+                  size: 80.0,
+                ),
               );
             }
           },
