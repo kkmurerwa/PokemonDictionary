@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:pokemon_dictionary/services/pokemon.dart';
 
 class AllPokemon {
-  final String url = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=50";
+  final String url = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20";
 
   String results;
   List<dynamic> allPokemonList;

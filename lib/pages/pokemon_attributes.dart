@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:pokemon_dictionary/services/pokemon.dart';
@@ -55,98 +56,108 @@ class _PokemonAttributesState extends State<PokemonAttributes> {
               List<dynamic> abilities = info["abilities"];
               String id = info["id"].toString();
               // print(abilities[0].toString());
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Center(
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage("https://pokeres.bastionbot.org/images/pokemon/$id.png"),
-                        radius: 70.0,
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Image.network(
+                        "https://pokeres.bastionbot.org/images/pokemon/$id.png",
+                        height: 350.0,
+                        fit: BoxFit.fitWidth,
+                        loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            height: 350,
+                            child: SpinKitFadingCircle(
+                              color: colorPrimary,
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Center(
-                      child: Text(
-                        name,
+                      SizedBox(height: 20.0),
+                      Center(
+                        child: Text(
+                          name,
+                          style: TextStyle(
+                            color: colorText,
+                            fontSize: 35.0,
+                            letterSpacing: 2.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Divider(height: 60, color: colorTextSecondary,),
+                      Text(
+                        "HEIGHT",
+                        style: TextStyle(
+                          color: colorTextSecondary,
+                          fontSize: 18.0,
+                          letterSpacing: 2.0,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      Text(
+                        info["height"].toString()
+                            + " inches",
                         style: TextStyle(
                           color: colorText,
-                          fontSize: 35.0,
+                          fontSize: 22.0,
                           letterSpacing: 2.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    Divider(height: 60, color: colorTextSecondary,),
-                    Text(
-                      "HEIGHT",
-                      style: TextStyle(
-                        color: colorTextSecondary,
-                        fontSize: 18.0,
-                        letterSpacing: 2.0,
+                      SizedBox(height: 20.0),
+                      Text(
+                        "WEIGHT",
+                        style: TextStyle(
+                          color: colorTextSecondary,
+                          fontSize: 18.0,
+                          letterSpacing: 2.0,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10.0),
-                    Text(
-                      info["height"].toString()
-                          + " inches",
-                      style: TextStyle(
-                        color: colorText,
-                        fontSize: 22.0,
-                        letterSpacing: 2.0,
-                        fontWeight: FontWeight.bold,
+                      SizedBox(height: 10.0),
+                      Text(
+                        info["weight"].toString()
+                        + " lbs",
+                        style: TextStyle(
+                          color: colorText,
+                          fontSize: 22.0,
+                          letterSpacing: 2.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Text(
-                      "WEIGHT",
-                      style: TextStyle(
-                        color: colorTextSecondary,
-                        fontSize: 18.0,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    Text(
-                      info["weight"].toString()
-                      + " lbs",
-                      style: TextStyle(
-                        color: colorText,
-                        fontSize: 22.0,
-                        letterSpacing: 2.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 20.0),
-                    Center(
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            "ABILITIES",
-                            style: TextStyle(
-                              fontSize: 22.0,
-                              color: colorPrimary,
+                      SizedBox(height: 20.0),
+                      Center(
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              "ABILITIES",
+                              style: TextStyle(
+                                fontSize: 22.0,
+                                color: colorPrimary,
+                              ),
                             ),
-                          ),
-                          Container(
-                            height: 200.0,
-                            child: new ListView.builder(
-                              itemCount: abilities.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Text(
-                                  abilities[index]["ability"]["name"],
-                                  style: TextStyle(
-                                    fontSize: 19.0,
-                                  ),
-                                );
-                              },
+                            Container(
+                              height: 200.0,
+                              child: new ListView.builder(
+                                itemCount: abilities.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Text(
+                                    abilities[index]["ability"]["name"],
+                                    style: TextStyle(
+                                      fontSize: 19.0,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             } else {
