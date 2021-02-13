@@ -14,7 +14,7 @@ class _LoadingState extends State<Loading> {
   String time = "Loading...";
 
   void getPokemon() async {
-    AllPokemon allPokemon = AllPokemon();
+    AllPokemon allPokemon = AllPokemon(offset: "0");
 
     await allPokemon.getInstance();
 

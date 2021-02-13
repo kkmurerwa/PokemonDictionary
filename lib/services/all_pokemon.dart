@@ -4,16 +4,25 @@ import 'package:http/http.dart';
 import 'package:pokemon_dictionary/services/pokemon.dart';
 
 class AllPokemon {
-  final String url = "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20";
+
+  String offset, limit = "10";
+  // Constructor
+  AllPokemon({
+    this.offset
+  });
+
+
+
 
   String results;
   List<dynamic> allPokemonList;
 
 
   // Empty constructor
-  AllPokemon();
+
 
   Future<void> getInstance() async {
+    final String url = "https://pokeapi.co/api/v2/pokemon/?offset=$offset&limit=$limit";
     try {
       // Make API Request
       Response response = await get("$url");
