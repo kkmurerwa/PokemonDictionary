@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pokemon_dictionary/services/all_pokemon.dart';
+import 'package:pokemon_dictionary/services/pokemon.dart';
 import 'package:pokemon_dictionary/values/colors/colors.dart';
 
 class Home extends StatefulWidget {
@@ -11,16 +12,46 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   Map data = {};
   List<dynamic> list;
+
+  List<dynamic> searchList = new List();
   int _offset = 0;
 
   var _isLoading = false;
+  bool _isSearching = false;
 
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
 
     list = data["list"];
-    // print(list[1]["url"].split("/")[6]);
+
+    void _searchChanged(String search) {
+      searchList.clear();
+      if (search == null || search.trim().length ==0) {
+        setState(() {
+          _isSearching = false;
+        });
+      } else {
+        print(search);
+
+        list.asMap().forEach((i, value) {
+          if (value["name"].contains(search)) {
+            // print(value["name"]);
+            searchList.add(value);
+          }
+        });
+
+
+
+        setState(() {
+          _isSearching = true;
+        });
+      }
+
+      print(list);
+    }
+
+
 
 
     Future _loadData() async {
@@ -76,6 +107,9 @@ class _HomeState extends State<Home> {
                         children: <Widget>[
                           TextField(
                             cursorColor: Colors.purple[900],
+                            onChanged: (changed){
+                             _searchChanged(changed);
+                            },
                             decoration: InputDecoration(
                                 hintText: "Search",
                                 border: InputBorder.none,
@@ -92,56 +126,9 @@ class _HomeState extends State<Home> {
                     childCount: 1,
                   ),
                 ),
-                SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.85,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: (){
-                          // String timeURL = locations[index].locationUrl;
-                          // print(timeURL);
-                          viewPokemonDetails(list[index]);
-                        },
-                        child: Card(
-                          child: Container(
-                            constraints: BoxConstraints.expand(),
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              children: [
-                                Image.network(
-                                  // "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${list[index]["url"].split("/")[6]}.png",
-                                  "https://pokeres.bastionbot.org/images/pokemon/${list[index]["url"].split("/")[6]}.png",
-                                  height: 150.0,
-                                  fit: BoxFit.fitWidth,
-                                  loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Container(
-                                      height: 150,
-                                      child: SpinKitFadingCircle(
-                                        color: colorSecondary,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: 10.0,),
-                                Text(
-                                  list[index]["name"].substring(0, 1).toUpperCase() + list[index]["name"].substring(1),
-                                  style: TextStyle(
-                                      fontSize: 16
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    childCount: list.length,
-                  ),
-                ),
+                _isSearching ?
+                  _widgetGridView(searchList) :
+                  _widgetGridView(list),
                 SliverFixedExtentList(
                   itemExtent: _isLoading ? 60 : 0,
                   delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
@@ -169,6 +156,59 @@ class _HomeState extends State<Home> {
       "name" : name,
       "url" : item["url"]
     });
+  }
+
+  Widget _widgetGridView(List<dynamic> passedList){
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.85,
+      ),
+      delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: (){
+              // String timeURL = locations[index].locationUrl;
+              // print(timeURL);
+              viewPokemonDetails(passedList[index]);
+            },
+            child: Card(
+              child: Container(
+                constraints: BoxConstraints.expand(),
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    Image.network(
+                      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${list[index]["url"].split("/")[6]}.png",
+                      // "https://pokeres.bastionbot.org/images/pokemon/${passedList[index]["url"].split("/")[6]}.png",
+                      height: 150.0,
+                      fit: BoxFit.fitWidth,
+                      loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 150,
+                          child: SpinKitFadingCircle(
+                            color: colorSecondary,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 10.0,),
+                    Text(
+                      passedList[index]["name"].substring(0, 1).toUpperCase() + passedList[index]["name"].substring(1),
+                      style: TextStyle(
+                          fontSize: 16
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        childCount: passedList.length,
+      ),
+    );
   }
 }
 
