@@ -37,29 +37,26 @@ class _HomeState extends State<Home> {
       if (search == null || search.trim().length ==0) {
         setState(() {
           _isSearching = false;
+          listLength = list.length;
         });
       } else {
         print(search);
 
         allPokemon.allPokemonList.asMap().forEach((i, value) {
-          if (value["name"].contains(search)) {
+          if (value["name"].contains(search.toLowerCase())) {
             // print(value["name"]);
             searchList.add(value);
           }
         });
-
-
 
         setState(() {
           _isSearching = true;
           listLength = searchList.length;
         });
       }
-
-      print(list);
     }
 
-    Future _loadData() async {
+    Future _loadMoreData() async {
       AllPokemon allPokemon = AllPokemon(offset: _offset.toString(), limit: "10");
 
       await allPokemon.getInstance();
@@ -86,7 +83,7 @@ class _HomeState extends State<Home> {
       ),
       body: Center(
         child: Container(
-          color: Colors.grey[100],
+          color: Colors.grey[200],
           child: NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (!_isLoading && !_isSearching && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
@@ -95,14 +92,14 @@ class _HomeState extends State<Home> {
                   _isLoading = true;
                   _offset = _offset + 10;
                 });
-                _loadData();
+                _loadMoreData();
               }
               return true;
             },
             child: CustomScrollView(
               slivers: <Widget>[
                 SliverFixedExtentList(
-                  itemExtent: 60,
+                  itemExtent: 58,
                   delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                     return Container(
                       margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
@@ -111,23 +108,20 @@ class _HomeState extends State<Home> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15)
                       ),
-                      child: Column(
-                        children: <Widget>[
-                          TextField(
-                            cursorColor: Colors.purple[900],
-                            onChanged: (changed){
-                             _searchChanged(changed);
-                            },
-                            decoration: InputDecoration(
-                                hintText: "Search",
-                                border: InputBorder.none,
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Color(0xFF000000).withOpacity(0.5),
-                                )
-                            ),
-                          ),
-                        ],
+                      child: TextField(
+                        cursorColor: colorSecondary,
+                        onChanged: (changed){
+                          _searchChanged(changed);
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(bottom: 10, top: 15),
+                            hintText: "Search",
+                            border: InputBorder.none,
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Color(0xFF000000).withOpacity(0.5),
+                            )
+                        ),
                       ),
                     );
                   },
