@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pokemon_dictionary/services/all_pokemon.dart';
@@ -167,7 +169,7 @@ class _HomeState extends State<Home> {
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 1,
+        childAspectRatio: 0.98,
       ),
       delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
@@ -177,36 +179,48 @@ class _HomeState extends State<Home> {
               // print(timeURL);
               viewPokemonDetails(passedList[index]);
             },
-            child: Card(
-              child: Container(
-                constraints: BoxConstraints.expand(),
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Image.network(
-                      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${passedList[index]["url"].split("/")[6]}.png",
-                      // "https://pokeres.bastionbot.org/images/pokemon/${passedList[index]["url"].split("/")[6]}.png",
-                      height: 120.0,
-                      fit: BoxFit.fitWidth,
-                      loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 100,
-                          child: SpinKitFadingCircle(
-                            color: colorSecondary,
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 10.0,),
-                    Text(
-                      passedList[index]["name"].substring(0, 1).toUpperCase() + passedList[index]["name"].substring(1),
-                      style: TextStyle(
-                          fontSize: 16
-                      ),
-                    ),
-                  ],
+            child: Container(
+              padding: const EdgeInsets.all(3.0),
+              child: Card(
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: colorPrimary,
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                        ),
+                        child: Image.network(
+                          "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${passedList[index]["url"].split("/")[6]}.png",
+                          // "https://pokeres.bastionbot.org/images/pokemon/${passedList[index]["url"].split("/")[6]}.png",
+                          height: 120.0,
+                          fit: BoxFit.contain,
+                          loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 100,
+                              child: SpinKitFadingCircle(
+                                color: colorSecondary,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 10.0,),
+                      Center(
+                        child: Text(
+                          passedList[index]["name"].substring(0, 1).toUpperCase() + passedList[index]["name"].substring(1),
+                          style: TextStyle(
+                              fontSize: 16
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
               ),
             ),
           );
