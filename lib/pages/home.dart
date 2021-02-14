@@ -18,12 +18,14 @@ class _HomeState extends State<Home> {
 
   var _isLoading = false;
   bool _isSearching = false;
+  int listLength;
 
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
 
     list = data["list"];
+
 
     Future<void> _searchChanged(String search) async {
       AllPokemon allPokemon =  AllPokemon(offset: "0", limit: "1118");
@@ -50,16 +52,12 @@ class _HomeState extends State<Home> {
 
         setState(() {
           _isSearching = true;
+          listLength = searchList.length;
         });
-
-
-
-
       }
 
       print(list);
     }
-
 
     Future _loadData() async {
       AllPokemon allPokemon = AllPokemon(offset: _offset.toString(), limit: "10");
@@ -71,8 +69,11 @@ class _HomeState extends State<Home> {
       // update data and loading status
       setState(() {
         _isLoading = false;
+        listLength = list.length;
       });
     }
+
+    listLength = _isSearching ? searchList.length : list.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -88,7 +89,7 @@ class _HomeState extends State<Home> {
           color: Colors.grey[100],
           child: NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
-              if (!_isLoading && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+              if (!_isLoading && !_isSearching && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                 // start loading data
                 setState(() {
                   _isLoading = true;
@@ -137,7 +138,7 @@ class _HomeState extends State<Home> {
                   _widgetGridView(searchList) :
                   _widgetGridView(list),
                 SliverFixedExtentList(
-                  itemExtent: _isLoading ? 60 : 0,
+                  itemExtent: !_isSearching ? 60 : 0,
                   delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                     return Container(
                       child: SpinKitRipple(
@@ -169,7 +170,7 @@ class _HomeState extends State<Home> {
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 0.85,
+        childAspectRatio: 1,
       ),
       delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
@@ -188,12 +189,12 @@ class _HomeState extends State<Home> {
                     Image.network(
                       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${list[index]["url"].split("/")[6]}.png",
                       // "https://pokeres.bastionbot.org/images/pokemon/${passedList[index]["url"].split("/")[6]}.png",
-                      height: 150.0,
+                      height: 120.0,
                       fit: BoxFit.fitWidth,
                       loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Container(
-                          height: 150,
+                          height: 100,
                           child: SpinKitFadingCircle(
                             color: colorSecondary,
                           ),
@@ -213,7 +214,7 @@ class _HomeState extends State<Home> {
             ),
           );
         },
-        childCount: passedList.length,
+        childCount: listLength,
       ),
     );
   }
