@@ -22,6 +22,15 @@ class _HomeState extends State<Home> {
   bool _isSearching = false;
   int listLength;
 
+  void viewPokemonDetails(Map item) {
+    print(item);
+    String name = item["name"].substring(0, 1).toUpperCase() + item["name"].substring(1);
+    Navigator.pushNamed(context, "/attributes", arguments: {
+      "name" : name,
+      "url" : item["url"]
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context).settings.arguments;
@@ -30,18 +39,22 @@ class _HomeState extends State<Home> {
 
 
     Future<void> _searchChanged(String search) async {
+      // Initialize object
       AllPokemon allPokemon =  AllPokemon(offset: "0", limit: "1118");
 
+      // Fetch from API
       await allPokemon.getInstance();
 
+      // Clear previous list
       searchList.clear();
 
+      // Handle null searches
       if (search == null || search.trim().length ==0) {
         setState(() {
           _isSearching = false;
           listLength = list.length;
         });
-      } else {
+      } else {// Handle string searches
         print(search);
 
         allPokemon.allPokemonList.asMap().forEach((i, value) {
@@ -51,6 +64,7 @@ class _HomeState extends State<Home> {
           }
         });
 
+        // Display data
         setState(() {
           _isSearching = true;
           listLength = searchList.length;
@@ -59,10 +73,13 @@ class _HomeState extends State<Home> {
     }
 
     Future _loadMoreData() async {
+      // Initialize fetch object
       AllPokemon allPokemon = AllPokemon(offset: _offset.toString(), limit: "10");
 
+      // Fetch API
       await allPokemon.getInstance();
 
+      // Add retrieved fields to current list
       list.addAll(allPokemon.allPokemonList);
 
       // update data and loading status
@@ -72,16 +89,13 @@ class _HomeState extends State<Home> {
       });
     }
 
+    // Handle list size changes
     listLength = _isSearching ? searchList.length : list.length;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: colorSecondary,
-        title: Text(
-            "All Pokemon",
-        ),
-        centerTitle: true,
-        elevation: 0,
+      appBar: CustomAppBar(
+        height: 80.0,
+        searchChanged: _searchChanged,
       ),
       body: Center(
         child: Container(
@@ -100,39 +114,6 @@ class _HomeState extends State<Home> {
             },
             child: CustomScrollView(
               slivers: <Widget>[
-                SliverFixedExtentList(
-                  itemExtent: 58,
-                  delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                    return Container(
-                      margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      child: TextField(
-                        cursorColor: colorSecondary,
-                        onChanged: (changed){
-                          _searchChanged(changed);
-                        },
-                        style: TextStyle(
-                          fontSize: 19,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(bottom: 10, top: 15),
-                          hintText: "Search",
-                          border: InputBorder.none,
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Color(0xFF000000).withOpacity(0.5),
-                          )
-                        ),
-                      ),
-                    );
-                  },
-                    childCount: 1,
-                  ),
-                ),
                 _isSearching ?
                   _widgetGridView(searchList) :
                   _widgetGridView(list),
@@ -156,14 +137,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void viewPokemonDetails(Map item) {
-    print(item);
-    String name = item["name"].substring(0, 1).toUpperCase() + item["name"].substring(1);
-    Navigator.pushNamed(context, "/attributes", arguments: {
-      "name" : name,
-      "url" : item["url"]
-    });
-  }
+
 
   Widget _widgetGridView(List<dynamic> passedList){
     return SliverGrid(
@@ -226,6 +200,49 @@ class _HomeState extends State<Home> {
           );
         },
         childCount: listLength,
+      ),
+    );
+  }
+}
+
+class CustomAppBar extends PreferredSize {
+  final double height;
+  final Function searchChanged;
+
+  CustomAppBar({@required this.height, this.searchChanged});
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.green,
+      child: Container(
+        margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 40.0, bottom: 10.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: TextField(
+          cursorColor: colorSecondary,
+          onChanged: (changed){
+            searchChanged(changed);
+          },
+          style: TextStyle(
+            fontSize: 19,
+          ),
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(bottom: 10, top: 15),
+              hintText: "Search",
+              border: InputBorder.none,
+              prefixIcon: Icon(
+                Icons.search,
+                color: Color(0xFF000000).withOpacity(0.5),
+              )
+          ),
+        ),
       ),
     );
   }
