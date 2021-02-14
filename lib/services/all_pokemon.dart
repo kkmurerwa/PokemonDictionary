@@ -5,10 +5,11 @@ import 'package:pokemon_dictionary/services/pokemon.dart';
 
 class AllPokemon {
 
-  String offset, limit = "10";
+  String offset, limit;
   // Constructor
   AllPokemon({
-    this.offset
+    this.offset,
+    this.limit
   });
 
 

@@ -25,8 +25,13 @@ class _HomeState extends State<Home> {
 
     list = data["list"];
 
-    void _searchChanged(String search) {
+    Future<void> _searchChanged(String search) async {
+      AllPokemon allPokemon =  AllPokemon(offset: "0", limit: "1118");
+
+      await allPokemon.getInstance();
+
       searchList.clear();
+
       if (search == null || search.trim().length ==0) {
         setState(() {
           _isSearching = false;
@@ -34,7 +39,7 @@ class _HomeState extends State<Home> {
       } else {
         print(search);
 
-        list.asMap().forEach((i, value) {
+        allPokemon.allPokemonList.asMap().forEach((i, value) {
           if (value["name"].contains(search)) {
             // print(value["name"]);
             searchList.add(value);
@@ -46,16 +51,18 @@ class _HomeState extends State<Home> {
         setState(() {
           _isSearching = true;
         });
+
+
+
+
       }
 
       print(list);
     }
 
 
-
-
     Future _loadData() async {
-      AllPokemon allPokemon = AllPokemon(offset: _offset.toString());
+      AllPokemon allPokemon = AllPokemon(offset: _offset.toString(), limit: "10");
 
       await allPokemon.getInstance();
 
