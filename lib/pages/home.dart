@@ -113,14 +113,17 @@ class _HomeState extends State<Home> {
                         onChanged: (changed){
                           _searchChanged(changed);
                         },
+                        style: TextStyle(
+                          fontSize: 19,
+                        ),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(bottom: 10, top: 15),
-                            hintText: "Search",
-                            border: InputBorder.none,
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: Color(0xFF000000).withOpacity(0.5),
-                            )
+                          hintText: "Search",
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Color(0xFF000000).withOpacity(0.5),
+                          )
                         ),
                       ),
                     );
@@ -181,7 +184,7 @@ class _HomeState extends State<Home> {
                 child: Column(
                   children: [
                     Image.network(
-                      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${list[index]["url"].split("/")[6]}.png",
+                      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${passedList[index]["url"].split("/")[6]}.png",
                       // "https://pokeres.bastionbot.org/images/pokemon/${passedList[index]["url"].split("/")[6]}.png",
                       height: 120.0,
                       fit: BoxFit.fitWidth,
