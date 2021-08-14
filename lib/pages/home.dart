@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pokemon_dictionary/services/all_pokemon.dart';
-import 'package:pokemon_dictionary/services/pokemon.dart';
 import 'package:pokemon_dictionary/values/colors/colors.dart';
 
 class Home extends StatefulWidget {
@@ -209,7 +206,7 @@ class CustomAppBar extends PreferredSize {
   final double height;
   final Function searchChanged;
 
-  CustomAppBar({@required this.height, this.searchChanged});
+  CustomAppBar({this.height, this.searchChanged});
 
   @override
   Size get preferredSize => Size.fromHeight(height);

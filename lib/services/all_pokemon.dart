@@ -12,9 +12,6 @@ class AllPokemon {
     this.limit
   });
 
-
-
-
   String results;
   List<dynamic> allPokemonList;
 
